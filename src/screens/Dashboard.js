@@ -7,56 +7,166 @@ import Button from '../components/Button'
 
 import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
 
+import * as Keychain from "react-native-keychain";
+
+import axios from "axios";
+
 const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy';
 
-const rewarded = RewardedAd.createForAdRequest(adUnitId, {
+let rewarded = RewardedAd.createForAdRequest(adUnitId, {
   requestNonPersonalizedAdsOnly: true,
   keywords: ['fashion', 'clothing'],
 });
 
+let waiting = false;
+
 export default function Dashboard({ navigation }) {
 
-  const [loaded, setLoaded] = useState(false);
+  let [waiting, setWaiting] = useState({ waiting: false });
+
+  let [loading, setLoading] = useState({ loading: false });
+
+  let [number, setNumber] = useState(0);
+
+  let [interval, newSetInterval] = useState(false);
+
+  let [timeout, newSetTimeout] = useState(false);
 
   useEffect(() => {
+    async function checkTime() {
+      const parse = new URLSearchParams({
+        user: await Keychain.getGenericPassword().then(res => res.username),
+      });
+
+      axios.get(`http://191.241.144.59:25565/check_time?${parse.toString()}`)
+        .then(res => {
+
+          if (res.data.status === true) {
+            const remainTime = res.data.data;
+
+            setNumber(prevNumber => prevNumber + remainTime);
+
+            setWaiting({ waiting: true });
+
+            setNumber(remainTime)
+            console.log(remainTime)
+            const int = setInterval(() => {
+              setWaiting({ waiting: true });
+
+              setNumber(prevNumber => {
+                if (prevNumber - 1 === 1) {
+                  clearInterval(int);
+                  console.log("CLEARED!")
+                }
+
+                return prevNumber - 1
+              })
+            }, 1000);
+
+            const set = setTimeout(() => {
+              clearInterval(int);
+              console.log("ENDED")
+              setTimeout(() => {
+                setWaiting({ waiting: false });
+
+                setNumber(0);
+              }, 1500);
+            }, remainTime * 1000)
+
+            newSetTimeout(set);
+
+            newSetInterval(int);
+          }
+        })
+    };
+
+    checkTime()
+  }, [])
+  function showReward() {
+    setLoading({ loading: true });
+    setWaiting({ waiting: true });
+
     const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-      setLoaded(true);
+      console.log(rewarded);
+      rewarded.show();
     });
+
     const unsubscribeEarned = rewarded.addAdEventListener(
       RewardedAdEventType.EARNED_REWARD,
-      reward => {
-        console.log('User earned reward of ', reward);
+      async reward => {
+
+        const parse = new URLSearchParams({ reward: reward.amount, user: await Keychain.getGenericPassword().then(res => res.username), Date: Date.now() });
+
+        axios.get(`http://191.241.144.59:25565/new_ads_rewarded?${parse.toString()}`)
+
+        setNumber(prevNumber => prevNumber + 10);
+
+        setLoading({ loading: false });
+
+        const int = setInterval(() => {
+
+          setNumber(prevNumber => {
+            if (prevNumber - 1 === 1) {
+              clearInterval(int);
+              console.log("CLEARED!")
+            }
+
+            return prevNumber - 1
+          })
+        }, 1000)
+
+        const set = setTimeout(() => {
+          setWaiting({ waiting: false });
+
+          console.log("ENDED");
+
+          clearInterval(int);
+          setNumber(0)
+        }, 10000);
+
+        newSetInterval(int);
+        newSetTimeout(set);
       },
     );
 
-    // Start loading the rewarded ad straight away
     rewarded.load();
 
-    // Unsubscribe from events on unmount
     return () => {
       unsubscribeLoaded();
       unsubscribeEarned();
     };
-  }, []);
-
-  // No advert ready to show yet
-  if (!loaded) {
-    return null;
   }
 
   return (
     <Background>
       <Logo />
-      <Header>Painel de Stats</Header>
-      <Paragraph>
-        Página de anúncios
-      </Paragraph>
+      <Header>Assistir anúncios</Header>
       <Button
         mode="Assistir anúncio"
-        onPress={() => rewarded.show() }
+        loading={loading.loading}
+        disabled={waiting.waiting}
+        onPress={() => showReward()}
       >
-        Assistir anúncio
+        {number === 0 ? `Assistir anúncio` : `Aguarde ${number} segundos`}
       </Button>
-    </Background>
+
+      <Button
+        mode="outlined"
+        onPress={() => {
+          Keychain.resetGenericPassword();
+
+          if (interval) clearInterval(interval);
+
+          if (timeout) clearTimeout(timeout);
+
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'StartScreen' }],
+          });
+        }}
+      >
+        Deslogar
+      </Button>
+    </Background >
   )
 }

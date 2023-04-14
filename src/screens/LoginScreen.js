@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../components/Background'
@@ -10,11 +10,39 @@ import BackButton from '../components/BackButton'
 import { theme } from '../core/theme'
 import { validateLogin } from '../helpers/loginValidator'
 
+import * as Keychain from "react-native-keychain";
+
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
 
+  const [userDetails, setUserDetails] = useState({});
+
+  useEffect(() => {
+
+    async function tryLogin() {
+      try {
+        const credentials = await Keychain.getGenericPassword();
+        console.log(credentials);
+
+        if (credentials) {
+          const { username, password } = credentials;
+          const validate = await validateLogin(username, password);
+          if (validate.status === true) {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Dashboard' }],
+            })
+          }
+        }
+      } catch (err_suamae) {
+
+      }
+    }
+    tryLogin()
+  }, [])
   const onLoginPressed = async () => {
+
     const validate = await validateLogin(email.value, password.value);
 
     if (validate.status === false) {
@@ -25,12 +53,10 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
-    // writeFile('config.json', JSON.stringify({
-    //   credentials: {
-    //     nickname: email.value,
-    //     password: password.value
-    //   }
-    // }))
+    Keychain.setGenericPassword(email.value, password.value);
+
+    setUserDetails({ username: email.value, password: password.value});
+    
     navigation.reset({
       index: 0,
       routes: [{ name: 'Dashboard' }],

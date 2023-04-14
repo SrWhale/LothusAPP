@@ -1,5 +1,5 @@
 import React from 'react'
-import { ImageBackground, StyleSheet, KeyboardAvoidingView } from 'react-native'
+import { ImageBackground, StyleSheet, KeyboardAvoidingView, StatusBar, View } from 'react-native'
 import { theme } from '../core/theme'
 
 export default function Background({ children }) {
@@ -8,6 +8,7 @@ export default function Background({ children }) {
     <ImageBackground
       style={styles.background}
     >
+      <StatusBar translucent backgroundColor={"#90ee90"} />
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         {children}
       </KeyboardAvoidingView>
