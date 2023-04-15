@@ -38,7 +38,7 @@ export default function Dashboard({ navigation }) {
         user: await Keychain.getGenericPassword().then(res => res.username),
       });
 
-      axios.get(`http://191.241.144.59:25565/check_time?${parse.toString()}`)
+      axios.get(`http://20.206.200.239:25565/check_time?${parse.toString()}`)
         .then(res => {
 
           if (res.data.status === true) {
@@ -97,7 +97,7 @@ export default function Dashboard({ navigation }) {
 
         const parse = new URLSearchParams({ reward: reward.amount, user: await Keychain.getGenericPassword().then(res => res.username), Date: Date.now() });
 
-        axios.get(`http://191.241.144.59:25565/new_ads_rewarded?${parse.toString()}`)
+        axios.get(`http://20.206.200.239:25565/new_ads_rewarded?${parse.toString()}`)
 
         setNumber(prevNumber => prevNumber + 10);
 
