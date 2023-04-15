@@ -11,7 +11,7 @@ import * as Keychain from "react-native-keychain";
 
 import axios from "axios";
 
-const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy';
+const adUnitId = "ca-app-pub-9579887747665373/2252841163"
 
 let rewarded = RewardedAd.createForAdRequest(adUnitId, {
   requestNonPersonalizedAdsOnly: true,
