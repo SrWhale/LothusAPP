@@ -5,6 +5,7 @@ import Header from '../components/Header'
 import Paragraph from '../components/Paragraph'
 import Button from '../components/Button'
 
+import { StyleSheet } from 'react-native'
 import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
 
 import * as Keychain from "react-native-keychain";
@@ -33,6 +34,7 @@ export default function Dashboard({ navigation }) {
   let [timeout, newSetTimeout] = useState(false);
 
   useEffect(() => {
+
     async function checkTime() {
       const parse = new URLSearchParams({
         user: await Keychain.getGenericPassword().then(res => res.username),
@@ -81,66 +83,73 @@ export default function Dashboard({ navigation }) {
     };
 
     checkTime()
-  }, [])
+  }, []);
+
+  const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+    console.log("SHOWED!")
+    rewarded.show();
+  });
+
+  const unsubscribeEarned = rewarded.addAdEventListener(
+    RewardedAdEventType.EARNED_REWARD,
+    async reward => {
+      console.log("REWARDED!")
+      unsubscribeEarned();
+      unsubscribeLoaded();
+      const parse = new URLSearchParams({ reward: reward.amount, user: await Keychain.getGenericPassword().then(res => res.username), Date: Date.now() });
+
+      axios.get(`http://20.206.200.239:25565/new_ads_rewarded?${parse.toString()}`)
+
+      setNumber(prevNumber => prevNumber + 120);
+
+      setLoading({ loading: false });
+
+      const int = setInterval(() => {
+
+        setNumber(prevNumber => {
+          if (prevNumber - 1 === 1) {
+            clearInterval(int);
+            console.log("CLEARED!")
+          }
+
+          return prevNumber - 1
+        })
+      }, 1000)
+
+      const set = setTimeout(() => {
+        setWaiting({ waiting: false });
+
+        console.log("ENDED");
+
+        clearInterval(int);
+        setNumber(0)
+      }, 60000 * 2);
+
+      newSetInterval(int);
+      newSetTimeout(set);
+    },
+  );
+
   function showReward() {
     console.log("STARTING SHOW KAKAPAKAPKAPK")
     setLoading({ loading: true });
     setWaiting({ waiting: true });
 
-    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-      console.log(rewarded);
-      rewarded.show();
-    });
-
-    const unsubscribeEarned = rewarded.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      async reward => {
-
-        const parse = new URLSearchParams({ reward: reward.amount, user: await Keychain.getGenericPassword().then(res => res.username), Date: Date.now() });
-
-        axios.get(`http://20.206.200.239:25565/new_ads_rewarded?${parse.toString()}`)
-
-        setNumber(prevNumber => prevNumber + 120);
-
-        setLoading({ loading: false });
-
-        const int = setInterval(() => {
-
-          setNumber(prevNumber => {
-            if (prevNumber - 1 === 1) {
-              clearInterval(int);
-              console.log("CLEARED!")
-            }
-
-            return prevNumber - 1
-          })
-        }, 1000)
-
-        const set = setTimeout(() => {
-          setWaiting({ waiting: false });
-
-          console.log("ENDED");
-
-          clearInterval(int);
-          setNumber(0)
-        }, 60000 * 2);
-
-        newSetInterval(int);
-        newSetTimeout(set);
-      },
-    );
-
     rewarded.load();
-
-    return () => {
-      unsubscribeLoaded();
-      unsubscribeEarned();
-    };
   }
 
   return (
     <Background>
       <Logo />
+      <View style={styles.container}>
+        <Text style={styles.title}>Perfil do Jogador</Text>
+        <Text style={styles.stat}>Vitórias: {vitorias}</Text>
+        <Text style={styles.stat}>Derrotas: {derrotas}</Text>
+        <Text style={styles.stat}>Partidas Totais: {partidasTotais}</Text>
+        <Text style={styles.stat}>Coins: {coins}</Text>
+        <Text style={styles.stat}>Mortes: {mortes}</Text>
+      </View>
+
       <Header>Assistir anúncios</Header>
       <Button
         mode="Assistir anúncio"
@@ -171,3 +180,21 @@ export default function Dashboard({ navigation }) {
     </Background >
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  stat: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+});

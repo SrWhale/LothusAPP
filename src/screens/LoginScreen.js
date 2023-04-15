@@ -12,6 +12,15 @@ import { validateLogin } from '../helpers/loginValidator'
 
 import * as Keychain from "react-native-keychain";
 
+import { AdEventType, AppOpenAd, TestIds } from 'react-native-google-mobile-ads';
+
+const adUnitId = TestIds.APP_OPEN // "ca-app-pub-9579887747665373/2751975552"
+
+let appOpenAd = AppOpenAd.createForAdRequest(adUnitId, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ['fashion', 'clothing'],
+});
+
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
@@ -34,6 +43,19 @@ export default function LoginScreen({ navigation }) {
               routes: [{ name: 'Dashboard' }],
             })
           }
+        } else {
+            console.log("STARTING LOAD")
+
+            const unsubscribeLoaded = appOpenAd.addAdEventListener(AdEventType.LOADED, () => {
+              console.log("LOADED")
+              appOpenAd.show();
+            });
+
+            appOpenAd.load();
+
+            return () => {
+              unsubscribeLoaded();
+            }
         }
       } catch (err_suamae) {
 

@@ -1,6 +1,3 @@
 {
-    "credentials": {
-        "nickname": "pauloheroo",
-        "password": "suamaeKKK"
-    }
+    "build": "eas build -p android --profile preview"
 }
