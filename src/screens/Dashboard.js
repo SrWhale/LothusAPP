@@ -11,7 +11,7 @@ import * as Keychain from "react-native-keychain";
 
 import axios from "axios";
 
-const adUnitId = "ca-app-pub-9579887747665373/2252841163"
+const adUnitId = TestIds.REWARDED // "ca-app-pub-9579887747665373/2252841163"
 
 let rewarded = RewardedAd.createForAdRequest(adUnitId, {
   requestNonPersonalizedAdsOnly: true,
@@ -40,7 +40,7 @@ export default function Dashboard({ navigation }) {
 
       axios.get(`http://20.206.200.239:25565/check_time?${parse.toString()}`)
         .then(res => {
-
+          console.log(res.data.status)
           if (res.data.status === true) {
             const remainTime = res.data.data;
 
@@ -83,6 +83,7 @@ export default function Dashboard({ navigation }) {
     checkTime()
   }, [])
   function showReward() {
+    console.log("STARTING SHOW KAKAPAKAPKAPK")
     setLoading({ loading: true });
     setWaiting({ waiting: true });
 
@@ -99,7 +100,7 @@ export default function Dashboard({ navigation }) {
 
         axios.get(`http://20.206.200.239:25565/new_ads_rewarded?${parse.toString()}`)
 
-        setNumber(prevNumber => prevNumber + 10);
+        setNumber(prevNumber => prevNumber + 120);
 
         setLoading({ loading: false });
 
@@ -122,7 +123,7 @@ export default function Dashboard({ navigation }) {
 
           clearInterval(int);
           setNumber(0)
-        }, 10000);
+        }, 60000 * 2);
 
         newSetInterval(int);
         newSetTimeout(set);
