@@ -2,17 +2,26 @@ import React from 'react'
 import { ImageBackground, StyleSheet, KeyboardAvoidingView, StatusBar, View } from 'react-native'
 import { theme } from '../core/theme'
 
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+
+import { NavigationContainer } from '@react-navigation/native';
+import { Feather } from '@expo/vector-icons';
+
+const Tab = createBottomTabNavigator();
+
 export default function Background({ children }) {
 
   return (
-    <ImageBackground
-      style={styles.background}
-    >
-      <StatusBar translucent backgroundColor={"#90ee90"} />
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
-        {children}
-      </KeyboardAvoidingView>
-    </ImageBackground>
+
+      <ImageBackground
+        style={styles.background}
+      >
+        <StatusBar translucent backgroundColor={"#90ee90"} />
+        <KeyboardAvoidingView style={styles.container} behavior="padding">
+          {children}
+        </KeyboardAvoidingView>
+      </ImageBackground>
+
   )
   // return (
   //   <ImageBackground
@@ -28,6 +37,14 @@ export default function Background({ children }) {
 }
 
 const styles = StyleSheet.create({
+  tabBar: {
+    backgroundColor: '#fff',
+    borderTopWidth: 0,
+    shadowOffset: { width: 5, height: 3 },
+    shadowColor: '#000',
+    shadowOpacity: 0.5,
+    elevation: 7,
+  },
   background: {
     flex: 1,
     width: '100%',

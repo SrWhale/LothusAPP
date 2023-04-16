@@ -5,10 +5,6 @@ import Header from '../components/Header'
 import Button from '../components/Button'
 import Paragraph from '../components/Paragraph'
 
-import { validateLogin } from '../helpers/loginValidator'
-
-import config from '../../config.json';
-
 export default function StartScreen({ navigation }) {
 
   useEffect(() => {

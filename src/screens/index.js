@@ -1,3 +1,6 @@
 export { default as StartScreen } from './StartScreen'
 export { default as LoginScreen } from './LoginScreen'
 export { default as Dashboard } from './Dashboard'
+export { default as Stats } from './Stats'
+export { default as LoggedMain } from './loggedMain'
+export { default as Shop } from './Shop'

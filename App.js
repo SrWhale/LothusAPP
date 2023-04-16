@@ -7,6 +7,9 @@ import {
   StartScreen,
   LoginScreen,
   Dashboard,
+  Stats,
+  LoggedMain,
+  Shop
 } from './src/screens'
 
 const Stack = createStackNavigator()
@@ -26,6 +29,9 @@ export default function App() {
           <Stack.Screen name="StartScreen" component={StartScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="Dashboard" component={Dashboard} />
+          <Stack.Screen name="Stats" component={Stats} />
+          <Stack.Screen name="LoggedMain" component={LoggedMain} />
+          <Stack.Screen name="Shop" component={Shop} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

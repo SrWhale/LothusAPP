@@ -40,22 +40,22 @@ export default function LoginScreen({ navigation }) {
           if (validate.status === true) {
             navigation.reset({
               index: 0,
-              routes: [{ name: 'Dashboard' }],
+              routes: [{ name: 'LoggedMain' }],
             })
           }
         } else {
-            console.log("STARTING LOAD")
+          console.log("STARTING LOAD")
 
-            const unsubscribeLoaded = appOpenAd.addAdEventListener(AdEventType.LOADED, () => {
-              console.log("LOADED")
-              appOpenAd.show();
-            });
+          const unsubscribeLoaded = appOpenAd.addAdEventListener(AdEventType.LOADED, () => {
+            console.log("LOADED")
+            appOpenAd.show();
+          });
 
-            appOpenAd.load();
+          appOpenAd.load();
 
-            return () => {
-              unsubscribeLoaded();
-            }
+          return () => {
+            unsubscribeLoaded();
+          }
         }
       } catch (err_suamae) {
 
@@ -77,11 +77,11 @@ export default function LoginScreen({ navigation }) {
 
     Keychain.setGenericPassword(email.value, password.value);
 
-    setUserDetails({ username: email.value, password: password.value});
-    
+    setUserDetails({ username: email.value, password: password.value });
+
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Dashboard' }],
+      routes: [{ name: 'LoggedMain' }],
     })
   }
 
