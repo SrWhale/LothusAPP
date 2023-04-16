@@ -5,6 +5,7 @@ import CupertinoFooter2 from "../components/Navigation";
 import Background from "../components/Background";
 
 import * as Keychain from "react-native-keychain";
+import { Text } from "react-native";
 
 function Untitled({ navigation }) {
 
@@ -21,14 +22,12 @@ function Untitled({ navigation }) {
     return (
         <Background>
             <View style={styles.container}>
-                <CupertinoFooter2 style={styles.cupertinoFooter2} props={{ navigation, head }}></CupertinoFooter2>
-                <Image
-                    source={{
-                        uri: `https://mc-heads.net/head/${head}`
-                    }}
-                    resizeMode="contain"
-                    style={styles.image}
-                ></Image>
+                <View style={styles.content}>
+                </View>
+
+                <View style={styles.navigationBar}>
+                    <CupertinoFooter2 style={styles.cupertinoFooter2} props={{ navigation, head }}></CupertinoFooter2>
+                </View>
             </View>
         </Background>
     );
@@ -39,9 +38,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     cupertinoFooter2: {
-        height: 75,
-        width: 390,
-        marginTop: Dimensions.get('screen').height - 110
+        flex: 1,
+    },
+    content: {
+        flex: 1,
+    },
+    navigationBar: {
+        flex: 0.1
     },
     image: {
         width: 92,
