@@ -22,7 +22,8 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.srwhale.lothusapp"
+      "package": "com.srwhale.lothusapp",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
