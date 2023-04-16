@@ -41,9 +41,9 @@ function CupertinoFooter2(props) {
         />
         <Text style={styles.btn3Caption}>Loja</Text>
       </TouchableOpacity>
-      <TouchableOpacity 
-      style={styles.btnWrapper4}
-      onPress={() => props.props.navigation.navigate('Dashboard')}
+      <TouchableOpacity
+        style={styles.btnWrapper4}
+        onPress={() => props.props.navigation.navigate('Dashboard')}
       >
         <Image
           style={styles.image}
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     backgroundColor: "rgba(255,255,255,1)",
-    justifyContent: "space-between"
+    justifyContent: "space-around"
   },
   btnWrapper1: {
     flex: 1,
