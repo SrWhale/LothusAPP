@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import Background from '../components/Background'
-import Tab from '../components/Tab';
-import Logo from '../components/Logo'
-import Header from '../components/Header'
-import Paragraph from '../components/Paragraph'
-import Button from '../components/Button'
 
-import { StyleSheet, View, Text, Dimensions, Image } from 'react-native'
-import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
-
-import CupertinoFooter2 from "../components/Navigation";
+import { StyleSheet, View, Text, Dimensions, Image, TouchableOpacity } from 'react-native'
+import { RewardedAd, TestIds } from 'react-native-google-mobile-ads';
 
 import * as Keychain from "react-native-keychain";
+
+import Header from "../components/Header";
 
 import axios from "axios";
 
@@ -54,7 +49,7 @@ export default function Stats({ navigation }) {
         }
     });
 
-    const [loaded, setLoaded] = useState(false);
+    const [LTC, setLTC] = useState(0);
 
     const [head, setHead] = useState("Steve");
 
@@ -68,43 +63,8 @@ export default function Stats({ navigation }) {
 
             setHead(username);
 
-            axios.get(`http://191.241.144.59:25565/getUserData?${parse.toString()}`).then(res => {
-
-                if (res.data.status === true) {
-                    const data = res.data.data;
-
-                    const trabalhado = {
-                        profile: {
-                            username: data.profile.name,
-                            rank: data.profile.group.rank
-                        },
-                        skywars: {
-                            profile: {
-                                coins: data.skywars.profile.coins,
-                                level: data.skywars.profile.level,
-                                xp: data.skywars.profile.xp
-                            },
-                            solo: {
-                                vitorias: data.skywars.solo.wins,
-                                derrotas: data.skywars.solo.loses,
-                                partidasTotais: data.skywars.solo.games,
-                                kills: data.skywars.solo.kills,
-                                winStreak: data.skywars.solo.bestWinstreak
-                            },
-                            team: {
-                                vitorias: data.skywars.team.wins,
-                                derrotas: data.skywars.team.loses,
-                                partidasTotais: data.skywars.team.games,
-                                kills: data.skywars.team.kills,
-                                winStreak: data.skywars.team.bestWinstreak
-                            }
-                        }
-                    };
-
-                    setUserData(trabalhado);
-
-                    setLoaded(true);
-                }
+            axios.get(`http://api.mc-lothus.com:25565/getUserData?${parse.toString()}`).then(res => {
+                setLTC(res.data.data.profile.cash);
             })
         };
 
@@ -112,38 +72,177 @@ export default function Stats({ navigation }) {
     }, [])
 
     return (
-        <Background> 
+        <Background navigation={navigation}>
             <View style={styles.container}>
-                <CupertinoFooter2 style={styles.cupertinoFooter2} props={{ navigation, head }}></CupertinoFooter2>
-                <Image
-                    source={{
-                        uri: `https://mc-heads.net/head/${head}`,
-                    }}
-                    resizeMode="contain"
-                    style={styles.image}
-                ></Image>
-                <View style={styles.rectRow}>
-                    <View style={styles.rect}>
-                        <Text style={styles.loremIpsum}>
-                            Vitórias: {userData.skywars.solo.vitorias}{"\n"}Derrotas: {userData.skywars.solo.derrotas}{"\n"}Kills: {userData.skywars.solo.kills}{"\n"}Mortes: {userData.skywars.solo.derrotas}{"\n"}
-                            WinStreak: {userData.skywars.solo.winStreak}{"\n"}Partidas: {userData.skywars.solo.partidasTotais}
-                        </Text>
+                <View style={styles.author}>
+                    <View style={{
+                        flex: 0.47,
+                        backgroundColor: "rgb(52, 52, 52)",
+                        width: "80%",
+                        height: "90%",
+                        borderRadius: 40,
+                        flexDirection: "row",
+                        paddingStart: "3%",
+                        alignContent: "center",
+                        alignItems: "center"
+                    }}>
+
+                        <Image
+                            style={{
+                                width: "30%",
+                                height: "97%",
+                                padding: 1
+                            }}
+                            source={{
+                                uri: `https://mc-heads.net/head/${head}`
+                            }}
+                        />
+
+                        <Header customStyle={{
+                            fontSize: 18,
+                            paddingStart: "4%"
+                        }}>
+                            {LTC}
+                        </Header>
+
+                        <Header customStyle={{
+                            fontSize: 18,
+                            paddingStart: "5%",
+                            color: "#17DD62"
+                        }}>
+                            LTC
+                        </Header>
                     </View>
-                    <View style={styles.rect2}>
-                        <Text style={styles.loremIpsum1}>
-                            Vitórias: {userData.skywars.team.vitorias}{"\n"}Derrotas: {userData.skywars.team.derrotas}{"\n"}Kills: {userData.skywars.team.kills}{"\n"}Mortes: {userData.skywars.team.derrotas}{"\n"}
-                            WinStreak: {userData.skywars.team.winStreak}{"\n"}Partidas: {userData.skywars.team.partidasTotais}
-                        </Text>
+
+                    <View style={{
+                        flex: 0.35,
+                        width: "100%",
+                        height: "90%",
+                        paddingRight: 5,
+
+                    }}>
+                    </View>
+
+                    <View style={{
+                        flex: 0.15,
+                        width: "100%",
+                        height: "90%",
+                        alignContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "rgb(52, 52, 52)",
+                        borderRadius: 40,
+                    }}>
+                        <TouchableOpacity
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                            }}
+                            onPress={() => navigation.navigate('Perfil')}
+                        >
+                            <Image
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    padding: 1
+                                }}
+                                source={require("../assets/login/perfil.png")}
+                            />
+                        </TouchableOpacity>
                     </View>
                 </View>
-                <View style={styles.soloRow}>
-                    <Text style={styles.solo}>Solo</Text>
-                    <Text style={styles.dupla}>Dupla</Text>
-                </View>
-                <View style={styles.rect3}>
-                    <Text style={styles.loremIpsum2}>
-                        Nickname: {userData.profile.username}{"\n"}Cargo: {userData.profile.rank}
-                    </Text>
+
+                <View style={{
+                    flex: 0.15
+                }}></View>
+
+                <View style={{
+                    flex: 0.75,
+                    justifyContent: "space-between"
+                }}>
+                    <View style={styles.modes}>
+                        <TouchableOpacity style={[styles.mode, {
+                            backgroundColor: "rgb(52, 52, 52)",
+                            width: "80%",
+                            height: "50%",
+                            borderRadius: 40,
+                            flexDirection: "row"
+                        }]} onPress={() => navigation.navigate('Shop')}>
+
+                            <Image
+                                style={{
+                                    height: "60%",
+                                    width: "25%",
+                                }}
+                                source={require("../assets/Stats/cama.png")}
+                            />
+
+                            <Header customStyle={{
+                                fontSize: 24,
+                                color: "red",
+                                paddingStart: "5%",
+                                letterSpacing: 1
+                            }}>BED</Header>
+                            <Header customStyle={{
+                                fontSize: 24,
+                                letterSpacing: 1
+                            }}>WARS</Header>
+
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={[styles.mode, {
+                            backgroundColor: "rgb(52, 52, 52)",
+                            width: "80%",
+                            height: "50%",
+                            borderRadius: 40,
+                            flexDirection: "row"
+                        }]} onPress={() => navigation.navigate('Skywars')}>
+
+                            <Image
+                                style={{
+                                    height: "70%",
+                                    width: "20%",
+                                }}
+                                source={require("../assets/Stats/espada.png")}
+                            />
+
+                            <Header customStyle={{
+                                fontSize: 24,
+                                color: "#17DD62",
+                                paddingStart: "5%",
+                                letterSpacing: 1
+                            }}>SKY</Header>
+                            <Header customStyle={{
+                                fontSize: 24,
+                                letterSpacing: 1
+                            }}>WARS</Header>
+
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={[styles.mode, {
+                            backgroundColor: "rgb(52, 52, 52)",
+                            width: "80%",
+                            height: "50%",
+                            borderRadius: 40,
+                            flexDirection: "row"
+                        }]} onPress={() => navigation.navigate('Shop')}>
+
+                            <Image
+                                style={{
+                                    height: "55%",
+                                    width: "15%",
+                                }}
+                                source={require("../assets/Stats/vara.png")}
+                            />
+
+                            <Header customStyle={{
+                                fontSize: 24,
+                                color: "yellow",
+                                paddingStart: "5%",
+                                letterSpacing: 1
+                            }}>MANUTENÇÃO</Header>
+
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         </Background>
@@ -151,91 +250,34 @@ export default function Stats({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    mode: {
+        flex: 0.20,
+        alignItems: "center",
+        alignSelf: "center",
+        paddingStart: "4%",
+    },
+    modes: {
+        flex: 0.8,
+        justifyContent: "space-around",
+        alignItems: "center",
+    },
     container: {
         flex: 1,
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
     },
-    cupertinoFooter2: {
-        height: 75,
-        width: 390,
-        marginTop: Dimensions.get('screen').height - 110
+    content: {
+        flex: 0.25,
+        width: "100%",
+        height: "100%",
+        flexDirection: "row"
     },
-    image: {
-        width: 92,
-        height: 81,
-        marginTop: -713,
-        marginLeft: 134
-    },
-    rect: {
-        width: 160,
-        height: 230,
-        backgroundColor: "rgba(230,230,230,0.67)"
-    },
-    loremIpsum: {
-        fontFamily: "comic-sans-ms-regular",
-        color: "#121212",
-        height: 270,
-        width: 126,
-        fontSize: 20,
-        marginTop: 12,
-        marginLeft: 10
-    },
-    rect2: {
-        width: 160,
-        height: 230,
-        backgroundColor: "rgba(230,230,230,0.67)",
-        marginLeft: 21
-    },
-    loremIpsum1: {
-        fontFamily: "comic-sans-ms-regular",
-        color: "#121212",
-        height: 270,
-        width: 126,
-        fontSize: 20,
-        marginTop: 12,
-        marginLeft: 14
-    },
-    rectRow: {
-        height: 294,
+    author: {
+        flex: 0.1,
+        width: "100%",
+        height: "100%",
         flexDirection: "row",
-        marginTop: 170,
-        marginLeft: 14,
-        marginRight: 26
-    },
-    solo: {
-        fontFamily: "comic-sans-ms-regular",
-        color: "#121212",
-        height: 60,
-        width: 170,
-        fontSize: 40
-    },
-    dupla: {
-        fontFamily: "comic-sans-ms-regular",
-        color: "#121212",
-        height: 60,
-        width: 145,
-        fontSize: 40
-    },
-    soloRow: {
-        height: 27,
-        flexDirection: "row",
-        marginTop: -351,
-        marginLeft: 44,
-        marginRight: 26
-    },
-    rect3: {
-        width: 310,
-        height: 80,
-        backgroundColor: "rgba(230,230,230,0.67)",
-        marginTop: -111,
-        marginLeft: 24
-    },
-    loremIpsum2: {
-        fontFamily: "roboto-regular",
-        color: "#121212",
-        height: 65,
-        width: 286,
-        fontSize: 20,
-        marginTop: 11,
-        marginLeft: 10
+        paddingStart: "3%",
+        paddingTop: "4%",
     }
 });

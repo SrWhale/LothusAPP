@@ -5,11 +5,11 @@
     "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1C1C1C"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -18,12 +18,13 @@
       "supportsTablet": true
     },
     "android": {
+      "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#1C1C1C"
       },
       "package": "com.srwhale.lothusapp",
-      "versionCode": 2
+      "versionCode": 8
     },
     "web": {
       "favicon": "./assets/favicon.png"

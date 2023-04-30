@@ -2,15 +2,10 @@ import React, { useState, useEffect } from 'react'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
 import Header from '../components/Header'
-import Paragraph from '../components/Paragraph'
 import Button from '../components/Button'
 
 import { StyleSheet, Dimensions, Text, View, Image } from 'react-native'
 import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
-
-import MaterialButtonPrimary from '../components/MaterialButtonPrimary';
-
-import CupertinoFooter2 from "../components/Navigation";
 
 import * as Keychain from "react-native-keychain";
 
@@ -47,12 +42,13 @@ export default function Dashboard({ navigation }) {
     };
 
     loadNickname();
+    
     async function checkTime() {
       const parse = new URLSearchParams({
         user: await Keychain.getGenericPassword().then(res => res.username),
       });
 
-      axios.get(`http://191.241.144.59:25565/check_time?${parse.toString()}`)
+      axios.get(`http://api.mc-lothus.com:25565/check_time?${parse.toString()}`)
         .then(res => {
           console.log(res.data.status)
           if (res.data.status === true) {
@@ -112,7 +108,7 @@ export default function Dashboard({ navigation }) {
       unsubscribeLoaded();
       const parse = new URLSearchParams({ reward: reward.amount, user: await Keychain.getGenericPassword().then(res => res.username), Date: Date.now() });
 
-      axios.get(`http://191.241.144.59:25565/new_ads_rewarded?${parse.toString()}`)
+      axios.get(`https://api.mc-lothus.com:25565/new_ads_rewarded?${parse.toString()}`)
 
       setNumber(prevNumber => prevNumber + 120);
 
@@ -153,7 +149,7 @@ export default function Dashboard({ navigation }) {
   }
 
   return (
-    <Background>
+    <Background navigation={navigation}>
       <View style={styles.container}>
         <Logo />
         <Header>Assistir anúncios</Header>
@@ -184,10 +180,6 @@ export default function Dashboard({ navigation }) {
           Deslogar
         </Button>
       </View>
-
-      <CupertinoFooter2 style={styles.cupertinoFooter2} props={{ navigation, head }}>
-
-      </CupertinoFooter2>
     </Background >
   )
 }
@@ -197,16 +189,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: "center",
     alignItems: "center",
-    justifyContent: "center"
-  },
-  cupertinoFooter2: {
-    height: 75,
-    width: 400,
-    position: 'absolute', bottom: 0, left: -26, right: 0,
-    padding: 0,
-    alignSelf: null,
-    alignItems: null,
-    justifyContent: null
+    justifyContent: "center",
   },
   image: {
     width: 92,

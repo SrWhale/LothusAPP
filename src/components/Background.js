@@ -1,61 +1,133 @@
 import React from 'react'
-import { ImageBackground, StyleSheet, KeyboardAvoidingView, StatusBar, View } from 'react-native'
-import { theme } from '../core/theme'
+import { StyleSheet, KeyboardAvoidingView, StatusBar, View, Image, TouchableOpacity, Dimensions } from 'react-native'
 
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import Header from '../components/Header'
 
-import { NavigationContainer } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons';
+import * as Keychain from "react-native-keychain";
 
-const Tab = createBottomTabNavigator();
+export default function Background({ children, navigation }) {
 
-export default function Background({ children }) {
+    return (
+        <View style={styles.background}>
+            <StatusBar backgroundColor={"rgb(28, 28, 28)"} />
+            <KeyboardAvoidingView style={styles.container} behavior="position" enabled>
+                {children}
+            </KeyboardAvoidingView>
+            <KeyboardAvoidingView style={styles.movimentationBar} behavior="position" enabled>
+                <View style={styles.barView}>
 
-  return (
+                    <TouchableOpacity
+                        style={styles.barViewItem}
+                        onPress={() => navigation.navigate('Shop')}
+                    >
+                        <Image
+                            source={require("../assets/carrinho.png")}
+                            style={{
+                                width: "50%",
+                                height: "80%",
+                            }}
+                        />
+                        <Header
+                            customStyle={{
+                                fontSize: 14.5,
+                            }}
+                        >
+                            LOJA
+                        </Header>
+                    </TouchableOpacity>
 
-      <ImageBackground
-        style={styles.background}
-      >
-        <StatusBar translucent backgroundColor={"#90ee90"} />
-        <KeyboardAvoidingView style={styles.container} behavior="padding">
-          {children}
-        </KeyboardAvoidingView>
-      </ImageBackground>
+                    <TouchableOpacity style={styles.moneyBarViewItem}
+                        onPress={() => navigation.navigate('Anuncio')}
+                    >
+                        <Image
+                            source={require("../assets/saco_de_dinheiro.png")}
+                            style={{
+                                width: "70%",
+                                height: "92%",
+                            }}
+                        />
 
-  )
-  // return (
-  //   <ImageBackground
-  //     source={require('../assets/background_dot.png')}
-  //     resizeMode="repeat"
-  //     style={styles.background}
-  //   >
-  //     <KeyboardAvoidingView style={styles.container} behavior="padding">
-  //       {children}
-  //     </KeyboardAvoidingView>
-  //   </ImageBackground>
-  // )
+                        <Header
+                            customStyle={{
+                                fontSize: 14.5,
+                            }}
+                        >
+                            ANÚNCIOS
+                        </Header>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.barViewItem}
+                        onPress={async () => {
+                            Keychain.resetGenericPassword();
+
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'LoginScreen' }],
+                            });
+                        }}
+                    >
+                        <Image
+                            source={require("../assets/porta.png")}
+                            style={{
+                                width: "50%",
+                                height: "90%",
+                            }}
+                        />
+
+                        <Header
+                            customStyle={{
+                                fontSize: 14.5,
+                            }}
+                        >
+                            SAIR
+                        </Header>
+                    </TouchableOpacity>
+                </View>
+            </KeyboardAvoidingView>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: '#fff',
-    borderTopWidth: 0,
-    shadowOffset: { width: 5, height: 3 },
-    shadowColor: '#000',
-    shadowOpacity: 0.5,
-    elevation: 7,
-  },
-  background: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: '#90ee90',
-  },
-  container: {
-    flex: 1,
-    padding: 20,
-    width: '100%',
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    tabBar: {
+        backgroundColor: 'rgb(28, 28, 28)',
+        shadowColor: '#000',
+        shadowOpacity: 0.5,
+    },
+    background: {
+        flex: 1,
+        backgroundColor: "rgb(28, 28, 28)",
+        width: Dimensions.get("window").width,
+        height: Dimensions.get("window").height,
+    },
+    container: {
+        flex: 0.90,
+        width: "100%",
+        height: "100%",
+        alignSelf: 'flex-start',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+    },
+    movimentationBar: {
+        flex: 0.10,
+        width: '100%',
+        height: "100%",
+        backgroundColor: "rgb(52, 52, 52)",
+    },
+    barView: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        height: "100%",
+    },
+    barViewItem: {
+        flex: 0.33,
+        alignItems: "center",
+        backgroundColor: "rgb(52, 52, 52)",
+        height: "80%"
+    },
+    moneyBarViewItem: {
+        flex: 0.33,
+        alignItems: "center",
+        height: "80%"
+    }
 })

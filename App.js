@@ -4,12 +4,13 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { theme } from './src/core/theme'
 import {
-  StartScreen,
   LoginScreen,
   Dashboard,
   Stats,
-  LoggedMain,
-  Shop
+  Anuncio,
+  Shop,
+  Perfil,
+  Skywars
 } from './src/screens'
 
 const Stack = createStackNavigator()
@@ -18,20 +19,24 @@ export default function App() {
 
   return (
     <Provider theme={theme}>
-      <NavigationContainer>
+      <NavigationContainer
+        theme={theme}>
         <Stack.Navigator
           initialRouteName="LoginScreen"
           screenOptions={{
             headerShown: false,
-            cardStyle: { backgroundColor: '#FFFFFF' }
+            cardStyle: { backgroundColor: 'rgb(28, 28, 28)' },
+            detachPreviousScreen: true, 
+            presentation: 'transparentModal'
           }}
         >
-          <Stack.Screen name="StartScreen" component={StartScreen} />
-          <Stack.Screen name="LoginScreen" component={LoginScreen} />
-          <Stack.Screen name="Dashboard" component={Dashboard} />
-          <Stack.Screen name="Stats" component={Stats} />
-          <Stack.Screen name="LoggedMain" component={LoggedMain} />
-          <Stack.Screen name="Shop" component={Shop} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} headerShown={true} />
+          <Stack.Screen name="Dashboard" component={Dashboard} headerShown={true} />
+          <Stack.Screen name="Stats" component={Stats} headerShown={true} />
+          <Stack.Screen name="Anuncio" component={Anuncio} headerShown={true} />
+          <Stack.Screen name="Shop" component={Shop} headerShown={true} />
+          <Stack.Screen name="Perfil" component={Perfil} headerShown={true} />
+          <Stack.Screen name="Skywars" component={Skywars} headerShown={true} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

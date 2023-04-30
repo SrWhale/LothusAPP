@@ -1,34 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import Background from '../components/Background'
-import Logo from '../components/Logo'
-import Header from '../components/Header'
-import Paragraph from '../components/Paragraph'
-import Button from '../components/Button'
 
-import { StyleSheet, Dimensions, Text, View, Image } from 'react-native'
-import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
+import { StyleSheet, Text, View } from 'react-native'
 
-import MaterialButtonPrimary from '../components/MaterialButtonPrimary';
+import React, { useState, useEffect } from 'react';
 
-import CupertinoFooter2 from "../components/Navigation";
+import Background from '../components/Background';
 
 import * as Keychain from "react-native-keychain";
-
-import axios from "axios";
-
-const adUnitId = TestIds.REWARDED // "ca-app-pub-9579887747665373/2252841163"
-
-let rewarded = RewardedAd.createForAdRequest(adUnitId, {
-    requestNonPersonalizedAdsOnly: true,
-    keywords: ['fashion', 'clothing'],
-});
-
-let waiting = false;
 
 export default function Shop({ navigation }) {
 
     const [head, setHead] = useState('Steve');
-
+    console.log(head)
     useEffect(() => {
         async function loadNickname() {
             const { username } = await Keychain.getGenericPassword();
@@ -39,12 +21,10 @@ export default function Shop({ navigation }) {
     }, []);
 
     return (
-        <Background>
+        <Background navigation={navigation}>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ fontSize: 24 }}>Em desenvolvimento :p</Text>
             </View>
-            <CupertinoFooter2 style={styles.cupertinoFooter2} props={{ navigation, head }}>
-            </CupertinoFooter2>
         </Background>
     );
 }
@@ -55,15 +35,6 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         alignItems: "center",
         justifyContent: "center"
-    },
-    cupertinoFooter2: {
-        height: 75,
-        width: 400,
-        position: 'absolute', bottom: 0, left: -26, right: 0,
-        padding: 0,
-        alignSelf: null,
-        alignItems: null,
-        justifyContent: null
     },
     image: {
         width: 92,

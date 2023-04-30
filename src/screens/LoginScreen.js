@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { TouchableOpacity, StyleSheet, View } from 'react-native'
-import { Text } from 'react-native-paper'
-import Background from '../components/Background'
+import { StyleSheet, View} from 'react-native'
+import Background from '../components/Background_login'
 import Logo from '../components/Logo'
-import Header from '../components/Header'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
-import BackButton from '../components/BackButton'
 import { theme } from '../core/theme'
 import { validateLogin } from '../helpers/loginValidator'
-
 import * as Keychain from "react-native-keychain";
+import { CheckBox } from 'react-native-elements'
 
 import { AdEventType, AppOpenAd, TestIds } from 'react-native-google-mobile-ads';
 
@@ -24,6 +21,9 @@ let appOpenAd = AppOpenAd.createForAdRequest(adUnitId, {
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
+
+  const [checked, setChecked] = useState(false)
+  const [toggleCheckBox, setToggleCheckBox] = useState(false)
 
   const [userDetails, setUserDetails] = useState({});
 
@@ -40,7 +40,7 @@ export default function LoginScreen({ navigation }) {
           if (validate.status === true) {
             navigation.reset({
               index: 0,
-              routes: [{ name: 'LoggedMain' }],
+              routes: [{ name: 'Anuncio' }],
             })
           }
         } else {
@@ -48,7 +48,7 @@ export default function LoginScreen({ navigation }) {
 
           const unsubscribeLoaded = appOpenAd.addAdEventListener(AdEventType.LOADED, () => {
             console.log("LOADED")
-            appOpenAd.show();
+            //appOpenAd.show();
           });
 
           appOpenAd.load();
@@ -75,47 +75,77 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
-    Keychain.setGenericPassword(email.value, password.value);
+    if (checked) {
+      Keychain.setGenericPassword(email.value, password.value);
 
-    setUserDetails({ username: email.value, password: password.value });
+      setUserDetails({ username: email.value, password: password.value });
+    }
 
     navigation.reset({
       index: 0,
-      routes: [{ name: 'LoggedMain' }],
+      routes: [{ name: 'Anuncio' }],
     })
   }
 
   return (
-    <Background>
-      <BackButton goBack={navigation.goBack} />
+    <Background navigation={navigation}>
+      <View style={{ flex: 0.3 }}>
+
+      </View>
+      <View style={styles.logo}>
+      </View>
       <Logo />
-      <Header>Página de Login.</Header>
       <TextInput
-        label="Nickname"
+        label={email.error}
+        leftIcon={{ type: 'font-awesome', name: 'user', color: "white" }}
+        keyboardType="email-address"
         returnKeyType="next"
         value={email.value}
         onChangeText={(text) => setEmail({ value: text, error: '' })}
-        error={!!email.error}
-        errorText={email.error}
         autoCapitalize="none"
       />
       <TextInput
-        label="Senha"
+        label={email.error}
+        leftIcon={{ type: 'font-awesome', color: "white", name: 'lock' }}
         returnKeyType="done"
         value={password.value}
         onChangeText={(text) => setPassword({ value: text, error: '' })}
-        error={!!password.error}
-        errorText={password.error}
         secureTextEntry
       />
-      <Button mode="contained" onPress={onLoginPressed}>
-        Login
+      <CheckBox
+        title="MANTENHA-ME CONECTADO"
+        checked={checked}
+        containerStyle={{ backgroundColor: "transparent", borderColor: "transparent" }}
+        textStyle={{ color: "white", fontSize: 15 }}
+        uncheckedColor='white'
+        checkedColor='white'
+        checkedIcon="check-square"
+        uncheckedIcon="square"
+        onPress={() => setChecked(!checked)}
+      />
+      <Button mode="contained" onPress={onLoginPressed} style={{
+        maxWidth: "40%",
+      }}>
+        Conectar
       </Button>
     </Background>
   )
 }
 
 const styles = StyleSheet.create({
+  icon: {
+    padding: 10,
+    margin: 5,
+    height: 25,
+    width: 25,
+    resizeMode: 'stretch',
+    alignItems: 'center',
+  },
+  logo: {
+    flex: 0.3,
+    justifyContent: "center",
+    backgroundColor: "blue"
+  },
   forgotPassword: {
     width: '100%',
     alignItems: 'flex-end',

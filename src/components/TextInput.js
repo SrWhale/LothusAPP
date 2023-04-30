@@ -1,16 +1,23 @@
 import React from 'react'
-import { View, StyleSheet, Text } from 'react-native'
-import { TextInput as Input } from 'react-native-paper'
+import { View, StyleSheet, Text, Image } from 'react-native'
+import { TextInput } from 'react-native-paper'
+import { Button, Input } from 'react-native-elements';
 import { theme } from '../core/theme'
 
-export default function TextInput({ errorText, description, ...props }) {
+export default function TextInputFunc({ errorText, description, ...props }) {
   return (
     <View style={styles.container}>
       <Input
-        style={styles.input}
+        inputContainerStyle={styles.input}
+        inputStyle={{color: "white"}}
         selectionColor="green"
-        underlineColor="transparent"
-        mode="outlined"
+        labelStyle={{
+          color: "red",
+          fontSize: 13,
+          padding: 1.5
+        }}
+        mode="flat"
+        borderRadius={8}
         {...props}
       />
       {description && !errorText ? (
@@ -23,20 +30,28 @@ export default function TextInput({ errorText, description, ...props }) {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    marginVertical: 12,
+    width: '90%',
   },
   input: {
-    backgroundColor: theme.colors.surface,
+    backgroundColor: 'transparent',
+    borderRadius: 12,
+    borderColor: "white",
+    borderStartWidth: 2,
+    borderTopWidth: 2,
+    boderLeftWidth: 2,
+    borderRightWidth: 2,
+    borderBottomWidth: 2,
+    paddingLeft: 10,
+    color: "white"
   },
   description: {
     fontSize: 13,
-    color: theme.colors.secondary,
+    color: 'green',
     paddingTop: 8,
   },
   error: {
     fontSize: 13,
-    color: theme.colors.error,
+    color: 'red',
     paddingTop: 8,
   },
 })

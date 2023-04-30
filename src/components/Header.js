@@ -1,17 +1,27 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { StyleSheet } from 'react-native'
 import { Text } from 'react-native-paper'
-import { theme } from '../core/theme'
+import { useFonts } from 'expo-font';
+
 
 export default function Header(props) {
-  return <Text style={styles.header} {...props} />
+
+  const [fontsLoaded] = useFonts({
+    'lothus': require('../assets/lothusFonte.ttf'),
+  });
+
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  return <Text style={[styles.header, props.customStyle]} {...props} />
 }
 
 const styles = StyleSheet.create({
   header: {
     fontSize: 21,
-    color: 'green',
-    fontWeight: 'bold',
-    paddingVertical: 12,
+    color: 'white',
+    fontFamily: "lothus"
   },
 })
